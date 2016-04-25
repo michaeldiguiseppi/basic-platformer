@@ -78,7 +78,7 @@ var mainState = {
     animation.to({angle: this.player.angle + 180}, 300);
 
     if (this.player.body.touching.down) {
-      this.player.body.velocity.y = -400;
+      this.player.body.velocity.y = -500;
       animation.start();
     } else if ( this.player.body.touching.up) {
       this.player.body.velocity.y = 400;
