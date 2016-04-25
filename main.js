@@ -29,7 +29,7 @@ var mainState = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
 
-    this.player = game.add.sprite(100, 220, 'player');
+    this.player = game.add.sprite(100, 210, 'player');
     this.player.width = 50;
     this.player.height = 50;
 
@@ -99,7 +99,7 @@ var mainState = {
     animation.to({angle: this.player.angle + 180}, 300);
 
     if (this.player.body.touching.down) {
-      this.player.body.velocity.y = -400;
+      this.player.body.velocity.y = -500;
       animation.start();
     }
   },
