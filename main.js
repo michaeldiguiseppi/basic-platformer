@@ -28,7 +28,8 @@ var mainState = {
     game.stage.backgroundColor = '#27d9d3';
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.player = game.add.sprite(100, 100, 'player');
+
+    this.player = game.add.sprite(100, 220, 'player');
     this.player.width = 50;
     this.player.height = 50;
 
@@ -42,6 +43,7 @@ var mainState = {
     spaceKey.onDown.add(this.jump, this);
 
     this.game.world.width = 50000;
+
     this.ground = this.add.tileSprite(0, this.game.height- 240, this.game.world.width, 50, 'ground');
     this.game.world.bringToTop(this.ground);
 
@@ -114,6 +116,7 @@ var mainState = {
     box.checkWorldBounds = true;
     box.outOfBoundsKill = true;
   },
+
   incrementer: 0,
   addTopBoxes: function() {
     this.incrementer++;
