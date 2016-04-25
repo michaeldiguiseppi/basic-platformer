@@ -28,7 +28,7 @@ var mainState = {
     game.stage.backgroundColor = '#27d9d3';
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.player = game.add.sprite(100, 275, 'player');
+    this.player = game.add.sprite(100, 220, 'player');
     this.player.width = 50;
     this.player.height = 50;
 
@@ -42,7 +42,7 @@ var mainState = {
     spaceKey.onDown.add(this.jump, this);
 
     this.game.world.width = 50000;
-    this.ground = this.add.tileSprite(0, this.game.height-100, this.game.world.width, 50, 'ground');
+    this.ground = this.add.tileSprite(0, this.game.height-220, this.game.world.width, 50, 'ground');
     this.game.world.bringToTop(this.ground);
 
     this.game.physics.arcade.enable(this.ground);
@@ -90,7 +90,7 @@ var mainState = {
     box.outOfBoundsKill = true;
   },
   addBoxes: function() {
-    this.addBox(650, this.game.height-150);
+    this.addBox(650, this.game.height-270);
   },
   restartGame: function() {
     game.state.start('main');
