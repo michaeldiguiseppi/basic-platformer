@@ -6,6 +6,9 @@ var mainState = {
     game.load.image('ground', 'assets/pipe.png');
     game.load.image('box', 'assets/pipe.png');
   },
+  velocity: -300,
+  gravity: 1000,
+  jumpHeight: 400,
   create: function() {
 
     if (game.device.desktop === false) {
@@ -36,7 +39,7 @@ var mainState = {
 
     game.physics.arcade.enable(this.player);
 
-    this.player.body.gravity.y = 800;
+    this.player.body.gravity.y = this.gravity;
     this.player.anchor.setTo(0.5, 0.5);
 
     var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -46,7 +49,7 @@ var mainState = {
 
     this.game.world.width = 50000;
 
-      this.ground = this.add.tileSprite(0, this.game.height- 240, this.game.world.width, 50, 'ground');
+    this.ground = this.add.tileSprite(0, this.game.height- 240, this.game.world.width, 50, 'ground');
     this.game.world.bringToTop(this.ground);
 
     this.game.physics.arcade.enable(this.ground);
@@ -58,6 +61,7 @@ var mainState = {
     // this.bottomTimer = game.time.events.loop(100, this.addBottomBoxes, this);
 
     this.boxes = game.add.group();
+    this.increaseTimer = game.time.events.loop(15000, this.increaseVelocity, this);
 
   },
   update: function() {
@@ -78,10 +82,10 @@ var mainState = {
     animation.to({angle: this.player.angle + 180}, 300);
 
     if (this.player.body.touching.down) {
-      this.player.body.velocity.y = -500;
+      this.player.body.velocity.y = -(this.jumpHeight);
       animation.start();
     } else if ( this.player.body.touching.up) {
-      this.player.body.velocity.y = 400;
+      this.player.body.velocity.y = this.jumpHeight;
       animation.start();
     }
   },
@@ -89,41 +93,43 @@ var mainState = {
     if ( this.player.body.touching.down ){
       this.player.x = 100;
       this.player.y = 315;
-      this.player.body.gravity.y = -800;
+      this.player.body.gravity.y = -(this.gravity);
     } else if ( this.player.body.touching.up ){
       this.player.x = 100;
       this.player.y = 215;
-      this.player.body.gravity.y = 800;
+      this.player.body.gravity.y = this.gravity;
     }
   },
-  flipUp: function(){
-    this.player.x = 100;
-    this.player.y = 190;
-    this.player.body.gravity.y = 800;
-  },
-  addBox: function(x, y) {
+  addBox: function(x, y, velocity) {
     var box = game.add.sprite(x, y, 'box');
 
     this.boxes.add(box);
 
     game.physics.arcade.enable(box);
 
-    box.body.velocity.x = -200;
+    box.body.velocity.x = velocity;
 
     box.checkWorldBounds = true;
     box.outOfBoundsKill = true;
   },
   incrementer: 0,
+  increaseVelocity: function() {
+    this.velocity -= 100;
+    console.log('Velocity', this.velocity);
+    this.gravity += 200;
+    console.log('Gravity', this.gravity);
+    this.jumpHeight += 50;
+    console.log('jumpHeight', this.jumpHeight);
+  },
   addBoxes: function() {
     this.incrementer++;
     var rand = Math.floor(Math.random() * 10);
     if ( rand > 7 && this.incrementer > 5){
       this.incrementer = 0;
-      var randHeight = Math.floor(Math.random() * 3)
-      this.addBox(650, this.game.height-this.heights[randHeight]);
+      var randHeight = Math.floor(Math.random() * 3);
+      this.addBox(650, this.game.height-this.heights[randHeight], this.velocity);
     }
   },
-  topIncrementer: 0,
   heights: [290, 190, 350, 130],
   restartGame: function() {
     game.state.start('main');
