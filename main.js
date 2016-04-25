@@ -38,17 +38,6 @@ var mainState = {
     this.player.body.gravity.y = 800;
     this.player.anchor.setTo(0.5, 0.5);
 
-    this.addBox = function (x, y) {
-      var box = game.add.sprite(x, y, 'box');
-
-      game.physics.enable(box, Phaser.Physics.ARCADE);
-
-      box.body.velocity.x = -200;
-
-      box.checkWorldBounds = true;
-      box.outOfBoundsKill = true;
-    };
-
     var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     spaceKey.onDown.add(this.jump, this);
 
@@ -63,19 +52,20 @@ var mainState = {
 
     this.timer = game.time.events.loop(1500, this.addBoxes, this);
 
+    this.boxes = game.add.group();
+
   },
   update: function() {
     this.game.physics.arcade.collide(this.player, this.ground, null, null, this);
-    this.game.physics.arcade.collide(this.player, this.box, this.playerHit, null, this);
-
+    game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
 
   },
   playerHit: function() {
     game.time.events.remove(this.timer);
-    console.log('testing');
-   this.box.forEach(function(box) {
+   this.boxes.forEach(function(box) {
      box.body.velocity.x = 0;
    }, this);
+   this.restartGame();
   },
   jump: function() {
     var animation = game.add.tween(this.player);
@@ -86,6 +76,18 @@ var mainState = {
       this.player.body.velocity.y = -400;
       animation.start();
     }
+  },
+  addBox: function(x, y) {
+    var box = game.add.sprite(x, y, 'box');
+
+    this.boxes.add(box);
+
+    game.physics.arcade.enable(box);
+
+    box.body.velocity.x = -200;
+
+    box.checkWorldBounds = true;
+    box.outOfBoundsKill = true;
   },
   addBoxes: function() {
     this.addBox(650, this.game.height-150);
