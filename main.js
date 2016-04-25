@@ -28,6 +28,7 @@ var mainState = {
     game.stage.backgroundColor = '#27d9d3';
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
+
     this.player = game.add.sprite(100, 220, 'player');
     this.player.width = 50;
     this.player.height = 50;
@@ -42,7 +43,8 @@ var mainState = {
     spaceKey.onDown.add(this.jump, this);
 
     this.game.world.width = 50000;
-    this.ground = this.add.tileSprite(0, this.game.height-220, this.game.world.width, 50, 'ground');
+
+    this.ground = this.add.tileSprite(0, this.game.height- 240, this.game.world.width, 50, 'ground');
     this.game.world.bringToTop(this.ground);
 
     this.game.physics.arcade.enable(this.ground);
@@ -50,7 +52,31 @@ var mainState = {
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = false;
 
-    this.timer = game.time.events.loop(1500, this.addBoxes, this);
+    function randTimer(){
+      return Math.random() * ( 2000 - 1000 ) + 1000;
+    }
+
+    var interval = randTimer();
+
+    this.timer = game.time.events.loop(200, this.addTopBoxes, this);
+    // var weighting = 1000;
+    // this.timer = game.time.events.repeat(weighting, 50, this.addTopBoxes, this);
+    // function updateWeight(){ if(weighting > 700){
+    //   weighting -= 100;
+    //   timer.delay = weighting;
+    //   scoreText.text = timer.delay;
+    //   }
+    // }
+    // this.timer =
+    // var addTop = this.addTopBoxes;
+    // var innerThis = this;
+    // setInterval(function(){
+    //     innerThis.addTopBoxes();
+    //     console.log("Haldo!");
+    //   }, randTimer());
+
+    // this.timer2 = game.time.events.loop(1000, this.addBottomBoxes, this);
+
 
     this.boxes = game.add.group();
 
@@ -81,6 +107,7 @@ var mainState = {
     var box = game.add.sprite(x, y, 'box');
 
     this.boxes.add(box);
+    this.game.time.events.add();
 
     game.physics.arcade.enable(box);
 
@@ -89,8 +116,19 @@ var mainState = {
     box.checkWorldBounds = true;
     box.outOfBoundsKill = true;
   },
-  addBoxes: function() {
-    this.addBox(650, this.game.height-270);
+
+  incrementer: 0,
+  addTopBoxes: function() {
+    this.incrementer++;
+    console.log(this.incrementer);
+    var decrement = Math.floor(Math.random() * 10);
+    if (decrement > 5 && this.incrementer > 5){
+      this.incrementer = 0;
+      this.addBox(650, this.game.height-290);
+    }
+  },
+  addBottomBoxes: function() {
+    this.addBox(650, this.game.height-190);
   },
   restartGame: function() {
     game.state.start('main');
