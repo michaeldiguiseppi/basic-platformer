@@ -54,8 +54,8 @@ var mainState = {
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = false;
 
-    this.topTimer = game.time.events.loop(100, this.addTopBoxes, this);
-    this.bottomTimer = game.time.events.loop(100, this.addBottomBoxes, this);
+    this.timer = game.time.events.loop(100, this.addBoxes, this);
+    // this.bottomTimer = game.time.events.loop(100, this.addBottomBoxes, this);
 
     this.boxes = game.add.group();
 
@@ -113,25 +113,18 @@ var mainState = {
     box.checkWorldBounds = true;
     box.outOfBoundsKill = true;
   },
-
+  incrementer: 0,
+  addBoxes: function() {
+    this.incrementer++;
+    var rand = Math.floor(Math.random() * 10);
+    if ( rand > 7 && this.incrementer > 5){
+      this.incrementer = 0;
+      var randHeight = Math.floor(Math.random() * 3)
+      this.addBox(650, this.game.height-this.heights[randHeight]);
+    }
+  },
   topIncrementer: 0,
-  addTopBoxes: function() {
-    this.topIncrementer++;
-    var rand = Math.floor(Math.random() * 10);
-    if (rand > 7 && this.topIncrementer > 10){
-      this.topIncrementer = 0;
-      this.addBox(650, this.game.height-290);
-    }
-  },
-  bottomIncrementer: 0,
-  addBottomBoxes: function() {
-    this.bottomIncrementer++;
-    var rand = Math.floor(Math.random() * 10);
-    if (rand > 7 && this.bottomIncrementer > 10){
-      this.bottomIncrementer = 0;
-      this.addBox(650, this.game.height-190);
-    }
-  },
+  heights: [290, 190, 350, 130],
   restartGame: function() {
     game.state.start('main');
   },
