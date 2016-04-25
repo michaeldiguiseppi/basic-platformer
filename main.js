@@ -29,7 +29,7 @@ var mainState = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
 
-    this.player = game.add.sprite(100, 220, 'player');
+    this.player = game.add.sprite(100, 100, 'player');
     this.player.width = 50;
     this.player.height = 50;
 
@@ -44,7 +44,7 @@ var mainState = {
 
     this.game.world.width = 50000;
 
-    this.ground = this.add.tileSprite(0, this.game.height- 240, this.game.world.width, 50, 'ground');
+      this.ground = this.add.tileSprite(0, this.game.height- 240, this.game.world.width, 50, 'ground');
     this.game.world.bringToTop(this.ground);
 
     this.game.physics.arcade.enable(this.ground);
@@ -52,42 +52,19 @@ var mainState = {
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = false;
 
-    function randTimer(){
-      return Math.random() * ( 2000 - 1000 ) + 1000;
-    }
-
-    var interval = randTimer();
-
-    this.timer = game.time.events.loop(200, this.addTopBoxes, this);
-    // var weighting = 1000;
-    // this.timer = game.time.events.repeat(weighting, 50, this.addTopBoxes, this);
-    // function updateWeight(){ if(weighting > 700){
-    //   weighting -= 100;
-    //   timer.delay = weighting;
-    //   scoreText.text = timer.delay;
-    //   }
-    // }
-    // this.timer =
-    // var addTop = this.addTopBoxes;
-    // var innerThis = this;
-    // setInterval(function(){
-    //     innerThis.addTopBoxes();
-    //     console.log("Haldo!");
-    //   }, randTimer());
-
-    // this.timer2 = game.time.events.loop(1000, this.addBottomBoxes, this);
-
+    this.topTimer = game.time.events.loop(100, this.addTopBoxes, this);
+    this.bottomTimer = game.time.events.loop(100, this.addBottomBoxes, this);
 
     this.boxes = game.add.group();
 
   },
   update: function() {
     this.game.physics.arcade.collide(this.player, this.ground, null, null, this);
-    game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
+    // game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
 
   },
   playerHit: function() {
-    game.time.events.remove(this.timer);
+   game.time.events.remove(this.timer);
    this.boxes.forEach(function(box) {
      box.body.velocity.x = 0;
    }, this);
@@ -103,11 +80,13 @@ var mainState = {
       animation.start();
     }
   },
+  flip: function() {
+
+  },
   addBox: function(x, y) {
     var box = game.add.sprite(x, y, 'box');
 
     this.boxes.add(box);
-    this.game.time.events.add();
 
     game.physics.arcade.enable(box);
 
@@ -117,18 +96,23 @@ var mainState = {
     box.outOfBoundsKill = true;
   },
 
-  incrementer: 0,
+  topIncrementer: 0,
   addTopBoxes: function() {
-    this.incrementer++;
-    console.log(this.incrementer);
-    var decrement = Math.floor(Math.random() * 10);
-    if (decrement > 5 && this.incrementer > 5){
-      this.incrementer = 0;
+    this.topIncrementer++;
+    var rand = Math.floor(Math.random() * 10);
+    if (rand > 7 && this.topIncrementer > 10){
+      this.topIncrementer = 0;
       this.addBox(650, this.game.height-290);
     }
   },
+  bottomIncrementer: 0,
   addBottomBoxes: function() {
-    this.addBox(650, this.game.height-190);
+    this.bottomIncrementer++;
+    var rand = Math.floor(Math.random() * 10);
+    if (rand > 7 && this.bottomIncrementer > 10){
+      this.bottomIncrementer = 0;
+      this.addBox(650, this.game.height-190);
+    }
   },
   restartGame: function() {
     game.state.start('main');
