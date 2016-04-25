@@ -40,7 +40,9 @@ var mainState = {
     this.player.anchor.setTo(0.5, 0.5);
 
     var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     spaceKey.onDown.add(this.jump, this);
+    downKey.onDown.add(this.flip, this);
 
     this.game.world.width = 50000;
 
@@ -78,10 +80,26 @@ var mainState = {
     if (this.player.body.touching.down) {
       this.player.body.velocity.y = -400;
       animation.start();
+    } else if ( this.player.body.touching.up) {
+      this.player.body.velocity.y = 400;
+      animation.start();
     }
   },
   flip: function() {
-
+    if ( this.player.body.touching.down ){
+      this.player.x = 100;
+      this.player.y = 315;
+      this.player.body.gravity.y = -800;
+    } else if ( this.player.body.touching.up ){
+      this.player.x = 100;
+      this.player.y = 215;
+      this.player.body.gravity.y = 800;
+    }
+  },
+  flipUp: function(){
+    this.player.x = 100;
+    this.player.y = 190;
+    this.player.body.gravity.y = 800;
   },
   addBox: function(x, y) {
     var box = game.add.sprite(x, y, 'box');
