@@ -1,22 +1,53 @@
+
+
 var mainState = {
   preload: function() {
-    game.load.image('box', 'assets/bird.png');
+    game.load.image('player', 'assets/bird.png');
     game.load.image('ground', 'assets/pipe.png');
+    game.load.image('box', 'assets/pipe.png');
   },
   create: function() {
+
+    if (game.device.desktop === false) {
+      // set the scaling mode to SHOW_ALL to show all the game
+      game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+      // set a minimum and maximum size for the game
+      // here the minimum is half the game size
+      // and the maximum is the original game size
+      game.scale.setMinMax(game.width/2, game.height/2, game.width, game.height);
+
+    }
+
+    // center the game horizontally and vertically
+    game.scale.pageAlignHorizontally = true;
+    game.scale.pageAlignVertically = true;
+
+
+
     game.stage.backgroundColor = '#27d9d3';
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.box = game.add.sprite(100, 275, 'box');
-    this.box.width = 50;
-    this.box.height = 50;
+    this.player = game.add.sprite(100, 275, 'player');
+    this.player.width = 50;
+    this.player.height = 50;
 
 
-    game.physics.arcade.enable(this.box);
+    game.physics.arcade.enable(this.player);
 
-    this.box.body.gravity.y = 1000;
-    this.box.body.velocity.x = 100;
-    this.box.anchor.setTo(0.5, 0.5);
+    this.player.body.gravity.y = 800;
+    this.player.anchor.setTo(0.5, 0.5);
+
+    this.addBox = function (x, y) {
+      var box = game.add.sprite(x, y, 'box');
+
+      game.physics.enable(box, Phaser.Physics.ARCADE);
+
+      box.body.velocity.x = -200;
+
+      box.checkWorldBounds = true;
+      box.outOfBoundsKill = true;
+    };
 
     var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     spaceKey.onDown.add(this.jump, this);
@@ -27,30 +58,43 @@ var mainState = {
 
     this.game.physics.arcade.enable(this.ground);
 
-    this.ground.body.velocity.x = -200;
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = false;
 
+    this.timer = game.time.events.loop(1500, this.addBoxes, this);
+
   },
   update: function() {
-    this.game.physics.arcade.collide(this.box, this.ground, this.playerHit, null, this);
+    this.game.physics.arcade.collide(this.player, this.ground, null, null, this);
+    this.game.physics.arcade.collide(this.player, this.box, this.playerHit, null, this);
+
+
   },
   playerHit: function() {
-
+    game.time.events.remove(this.timer);
+    console.log('testing');
+   this.box.forEach(function(box) {
+     box.body.velocity.x = 0;
+   }, this);
   },
   jump: function() {
-    var animation = game.add.tween(this.box);
+    var animation = game.add.tween(this.player);
 
-    animation.to({angle: 180}, 800);
+    animation.to({angle: this.player.angle + 180}, 300);
 
-    if (this.box.body.touching.down) {
-      this.box.body.velocity.y = -500;
+    if (this.player.body.touching.down) {
+      this.player.body.velocity.y = -400;
+      animation.start();
     }
-
-    animation.start();
   },
-}
+  addBoxes: function() {
+    this.addBox(650, this.game.height-150);
+  },
+  restartGame: function() {
+    game.state.start('main');
+  },
+};
 
-var game = new Phaser.Game(480, 640, 'gameArea');
+var game = new Phaser.Game(640, 480, 'gameArea');
 
 game.state.add('main', mainState, true);
