@@ -32,6 +32,10 @@ platform.Game.prototype = {
     platform.game.stage.backgroundColor = '#27d9d3';
     platform.game.physics.startSystem(Phaser.Physics.ARCADE);
 
+    // mymap = platform.game.add.tilemap('jsonFile');
+    // mymap.addTilesetImage('buildings');
+    // layermain = mymap.createLayer('Tile Layer 1');
+    // mymap.setCollisionByExclusion([0], true, 'Tile Layer 1');
 
     this.player = platform.game.add.sprite(50, 100, 'player');
     this.player.width = 50;
