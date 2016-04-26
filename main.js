@@ -1,11 +1,13 @@
 
+//function preload() {//Load the tilemap file    game.load.tilemap('myGame', 'assets/tmx1.json', null, Phaser.Tilemap.TILED_JSON);//Load the spritesheet for the tilemap    game.load.image('tiles', 'assets/main.png');//Load other assets, the playergame.load.spritesheet('player', 'assets/sprites/male_hero_1.png', 16, 16, 4);}var map;var layer;function create() {    map = game.add.tilemap('myGame');//'main' is the name of the spritesheet inside of Tiled Map Editor    map.addTilesetImage('main', 'tiles');//'Grass 1' is the name of a layer inside of Tiled Map Editor    layer = map.createLayer('Grass 1');    layer.resizeWorld();//Add playergame.add.sprite(300, 200, 'player');}function update() {}
 
 var mainState = {
   preload: function() {
     game.load.image('player', 'assets/bird.png');
     game.load.image('ground', 'assets/pipe.png');
     game.load.image('box', 'assets/pipe.png');
-    game.load.image('coin', 'assets/coin_01.png');
+    game.load.tilemap('buildings', 'assets/basic_buildings.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'assets/sheet.png');
   },
   velocity: -300,
   gravity: 1000,
@@ -33,12 +35,9 @@ var mainState = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
 
-    this.player = game.add.sprite(50, 100, 'player');
+    this.player = game.add.sprite(100, 100, 'player');
     this.player.width = 50;
     this.player.height = 50;
-
-    this.score = 0;
-    this.labelScore = game.add.text(20, 20, '0', {font: "30px Arial", fill: 'white'})
 
 
     game.physics.arcade.enable(this.player);
@@ -65,14 +64,11 @@ var mainState = {
     // this.bottomTimer = game.time.events.loop(100, this.addBottomBoxes, this);
 
     this.boxes = game.add.group();
-
-    this.coins = game.add.group();
     this.increaseTimer = game.time.events.loop(15000, this.increaseVelocity, this);
 
   },
   update: function() {
     this.game.physics.arcade.collide(this.player, this.ground, null, null, this);
-    this.game.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, this);
     // game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
 
   },
@@ -98,16 +94,15 @@ var mainState = {
   },
   flip: function() {
     if ( this.player.body.touching.down ){
-      this.player.x = 50;
+      this.player.x = 100;
       this.player.y = 315;
       this.player.body.gravity.y = -(this.gravity);
     } else if ( this.player.body.touching.up ){
-      this.player.x = 50;
+      this.player.x = 100;
       this.player.y = 215;
       this.player.body.gravity.y = this.gravity;
     }
   },
-
   addBox: function(x, y, velocity) {
     var box = game.add.sprite(x, y, 'box');
 
@@ -115,7 +110,7 @@ var mainState = {
 
     game.physics.arcade.enable(box);
 
-    box.body.velocity.x = velocity;
+    box.body.velocity.x = this.velocity;
 
     box.checkWorldBounds = true;
     box.outOfBoundsKill = true;
@@ -136,43 +131,7 @@ var mainState = {
       this.incrementer = 0;
       var randHeight = Math.floor(Math.random() * 3);
       this.addBox(650, this.game.height-this.heights[randHeight], this.velocity);
-
-      //Add Coin Functionality
-      if (rand > 8 ){
-        switch (this.heights[randHeight]){
-          case 130:
-            this.addCoin(650, this.game.height-this.heights[randHeight] - 55, this.velocity);
-          break;
-          case 190:
-            this.addCoin(650, this.game.height-this.heights[randHeight] + 75, this.velocity);
-          break;
-          case 290:
-            this.addCoin(650, this.game.height-this.heights[randHeight] - 75, this.velocity);
-          break;
-          case 350:
-            this.addCoin(650, this.game.height-this.heights[randHeight] + 55, this.velocity);
-          break;
-        }
-      }
-      //End Add Coint Functionality
     }
-  },
-  addCoin: function(x, y, velocity){
-    var coin = game.add.sprite(x, y, 'coin');
-    coin.height = 50;
-    coin.width = 50;
-    this.coins.add(coin);
-    game.physics.arcade.enable(coin);
-    coin.body.velocity.x = this.velocity;
-    coin.checkWorldBounds = true;
-    coin.outOfBoundsKill = true;
-  },
-  collectCoin: function(){
-    //Below is the function to destroy the coin.
-    this.coins.getFirstAlive().destroy();
-    this.score += 1;
-    this.labelScore.text = this.score;
-    console.log("Get Money!");
   },
   heights: [290, 190, 350, 130],
   restartGame: function() {
