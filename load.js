@@ -1,29 +1,19 @@
-var platforms = platforms || {};
+var platform = platform || {};
 
-platforms.game = new Phaser.Game(600, 800, Phaser.AUTO, '');
+platform.game = new Phaser.Game(640, 480, 'gameArea');
+
+// var game = new Phaser.Game(640, 480, 'gameArea');
 
 var gameWorld = [];
-var randomTile = 0;
 var timer = 0;
-var randomColor = 0;
 var frame = "";
 var color = "";
-var delay = 0;
-var gameFrame = 0;
-var nBack_frames = 0;
-var nBack_colors = 0;
 var gameState = { color: "", position: 0 };
 var Score = 0;
-var scoreString = 'Your Score is ';
-var rightOrWrong = "";
-var scoreText;
-var messageText;
-var nbackText;
-var nback_text = 'number of frames back is ';
 
 
-platforms.game.state.add('Preload', platforms.Preload);
-platforms.game.state.add('MainMenu', platforms.MainMenu);
-platforms.game.state.add('Game', platforms.Game);
+platform.game.state.add('Preload', platform.Preload);
+platform.game.state.add('Menu', platform.Menu);
+platform.game.state.add('Game', platform.Game);
 
-platforms.game.state.start('Preload');
+platform.game.state.start('Preload');

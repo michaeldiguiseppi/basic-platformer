@@ -1,45 +1,53 @@
 
-//function preload() {//Load the tilemap file    game.load.tilemap('myGame', 'assets/tmx1.json', null, Phaser.Tilemap.TILED_JSON);//Load the spritesheet for the tilemap    game.load.image('tiles', 'assets/main.png');//Load other assets, the playergame.load.spritesheet('player', 'assets/sprites/male_hero_1.png', 16, 16, 4);}var map;var layer;function create() {    map = game.add.tilemap('myGame');//'main' is the name of the spritesheet inside of Tiled Map Editor    map.addTilesetImage('main', 'tiles');//'Grass 1' is the name of a layer inside of Tiled Map Editor    layer = map.createLayer('Grass 1');    layer.resizeWorld();//Add playergame.add.sprite(300, 200, 'player');}function update() {}
+//function preload() {//Load the tilemap file    platform.game.load.tilemap('myGame', 'assets/tmx1.json', null, Phaser.Tilemap.TILED_JSON);//Load the spritesheet for the tilemap    platform.game.load.image('tiles', 'assets/main.png');//Load other assets, the playerplatform.game.load.spritesheet('player', 'assets/sprites/male_hero_1.png', 16, 16, 4);}var map;var layer;function create() {    map = platform.game.add.tilemap('myGame');//'main' is the name of the spritesheet inside of Tiled Map Editor    map.addTilesetImage('main', 'tiles');//'Grass 1' is the name of a layer inside of Tiled Map Editor    layer = map.createLayer('Grass 1');    layer.resizeWorld();//Add playerplatform.game.add.sprite(300, 200, 'player');}function update() {}
 
-var mainState = {
+var platform = platform || {};
+
+platform.Game = function(){};
+
+
+platform.Game.prototype = {
   velocity: -300,
   gravity: 1000,
   jumpHeight: 400,
   create: function() {
 
-    if (game.device.desktop === false) {
-      // set the scaling mode to SHOW_ALL to show all the game
-      game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    if (platform.game.device.desktop === false) {
+      // set the scaling mode to SHOW_ALL to show all the platform.game
+      platform.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-      // set a minimum and maximum size for the game
-      // here the minimum is half the game size
-      // and the maximum is the original game size
-      game.scale.setMinMax(game.width/2, game.height/2, game.width, game.height);
+      // set a minimum and maximum size for the platform.game
+      // here the minimum is half the platform.game size
+      // and the maximum is the original platform.game size
+      platform.game.scale.setMinMax(platform.game.width/2, platform.game.height/2, platform.game.width, platform.game.height);
 
     }
 
-    // center the game horizontally and vertically
-    game.scale.pageAlignHorizontally = true;
-    game.scale.pageAlignVertically = true;
+    // center the platform.game horizontally and vertically
+    platform.game.scale.pageAlignHorizontally = true;
+    platform.game.scale.pageAlignVertically = true;
 
 
 
-    game.stage.backgroundColor = '#27d9d3';
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+    platform.game.stage.backgroundColor = '#27d9d3';
+    platform.game.physics.startSystem(Phaser.Physics.ARCADE);
 
 
-    this.player = game.add.sprite(100, 100, 'player');
+    this.player = platform.game.add.sprite(50, 100, 'player');
     this.player.width = 50;
     this.player.height = 50;
 
+    this.score = 0;
+    this.labelScore = platform.game.add.text(20, 20, '0', {font: "30px Arial", fill: 'white'});
 
-    game.physics.arcade.enable(this.player);
+
+    platform.game.physics.arcade.enable(this.player);
 
     this.player.body.gravity.y = this.gravity;
     this.player.anchor.setTo(0.5, 0.5);
 
-    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    var spaceKey = platform.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    var downKey = platform.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     spaceKey.onDown.add(this.jump, this);
     downKey.onDown.add(this.flip, this);
 
@@ -53,27 +61,29 @@ var mainState = {
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = false;
 
-    this.timer = game.time.events.loop(100, this.addBoxes, this);
-    // this.bottomTimer = game.time.events.loop(100, this.addBottomBoxes, this);
+    this.timer = platform.game.time.events.loop(100, this.addBoxes, this);
+    // this.bottomTimer = platform.game.time.events.loop(100, this.addBottomBoxes, this);
 
-    this.boxes = game.add.group();
-    this.increaseTimer = game.time.events.loop(15000, this.increaseVelocity, this);
+    this.boxes = platform.game.add.group();
+    this.coins = platform.game.add.group();
+    this.increaseTimer = platform.game.time.events.loop(15000, this.increaseVelocity, this);
 
   },
   update: function() {
     this.game.physics.arcade.collide(this.player, this.ground, null, null, this);
-    // game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
+     this.game.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, this);
+    // platform.game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
 
   },
   playerHit: function() {
-   game.time.events.remove(this.timer);
+   platform.game.time.events.remove(this.timer);
    this.boxes.forEach(function(box) {
      box.body.velocity.x = 0;
    }, this);
    this.restartGame();
   },
   jump: function() {
-    var animation = game.add.tween(this.player);
+    var animation = platform.game.add.tween(this.player);
 
     animation.to({angle: this.player.angle + 180}, 300);
 
@@ -87,21 +97,21 @@ var mainState = {
   },
   flip: function() {
     if ( this.player.body.touching.down ){
-      this.player.x = 100;
+      this.player.x = 50;
       this.player.y = 315;
       this.player.body.gravity.y = -(this.gravity);
     } else if ( this.player.body.touching.up ){
-      this.player.x = 100;
+      this.player.x = 50;
       this.player.y = 215;
       this.player.body.gravity.y = this.gravity;
     }
   },
   addBox: function(x, y, velocity) {
-    var box = game.add.sprite(x, y, 'box');
+    var box = platform.game.add.sprite(x, y, 'box');
 
     this.boxes.add(box);
 
-    game.physics.arcade.enable(box);
+    platform.game.physics.arcade.enable(box);
 
     box.body.velocity.x = this.velocity;
 
@@ -124,14 +134,48 @@ var mainState = {
       this.incrementer = 0;
       var randHeight = Math.floor(Math.random() * 3);
       this.addBox(650, this.game.height-this.heights[randHeight], this.velocity);
+      if (rand > 8 ){
+         switch (this.heights[randHeight]){
+           case 130:
+             this.addCoin(650, this.game.height-this.heights[randHeight] - 55, this.velocity);
+           break;
+           case 190:
+             this.addCoin(650, this.game.height-this.heights[randHeight] + 75, this.velocity);
+           break;
+           case 290:
+             this.addCoin(650, this.game.height-this.heights[randHeight] - 75, this.velocity);
+           break;
+           case 350:
+             this.addCoin(650, this.game.height-this.heights[randHeight] + 55, this.velocity);
+           break;
+         }
+       }
+       //End Add Coint Functionality
     }
   },
+  addCoin: function(x, y, velocity){
+     var coin = platform.game.add.sprite(x, y, 'coin');
+     coin.height = 50;
+     coin.width = 50;
+     this.coins.add(coin);
+     platform.game.physics.arcade.enable(coin);
+     coin.body.velocity.x = this.velocity;
+     coin.checkWorldBounds = true;
+     coin.outOfBoundsKill = true;
+   },
+   collectCoin: function(){
+     //Below is the function to destroy the coin.
+     this.coins.getFirstAlive().destroy();
+     this.score += 1;
+     this.labelScore.text = this.score;
+     console.log("Get Money!");
+   },
   heights: [290, 190, 350, 130],
   restartGame: function() {
-    game.state.start('main');
+    platform.game.state.start('main');
   },
 };
 
-var game = new Phaser.Game(640, 480, 'gameArea');
 
-game.state.add('main', mainState, true);
+
+// platform.game.state.add('main', mainState, true);
