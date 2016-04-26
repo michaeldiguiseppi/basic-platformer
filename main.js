@@ -2,13 +2,6 @@
 //function preload() {//Load the tilemap file    game.load.tilemap('myGame', 'assets/tmx1.json', null, Phaser.Tilemap.TILED_JSON);//Load the spritesheet for the tilemap    game.load.image('tiles', 'assets/main.png');//Load other assets, the playergame.load.spritesheet('player', 'assets/sprites/male_hero_1.png', 16, 16, 4);}var map;var layer;function create() {    map = game.add.tilemap('myGame');//'main' is the name of the spritesheet inside of Tiled Map Editor    map.addTilesetImage('main', 'tiles');//'Grass 1' is the name of a layer inside of Tiled Map Editor    layer = map.createLayer('Grass 1');    layer.resizeWorld();//Add playergame.add.sprite(300, 200, 'player');}function update() {}
 
 var mainState = {
-  preload: function() {
-    game.load.image('player', 'assets/bird.png');
-    game.load.image('ground', 'assets/pipe.png');
-    game.load.image('box', 'assets/pipe.png');
-    game.load.tilemap('buildings', 'assets/basic_buildings.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles', 'assets/sheet.png');
-  },
   velocity: -300,
   gravity: 1000,
   jumpHeight: 400,
