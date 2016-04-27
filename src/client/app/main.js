@@ -9,7 +9,8 @@ platform.Game = function(){};
 platform.Game.prototype = {
   velocity: -300,
   gravity: 1000,
-  jumpHeight: 400,
+  jumpHeight: 500,
+  fps: 15,
   create: function() {
 
     if (platform.game.device.desktop === false) {
@@ -37,7 +38,7 @@ platform.Game.prototype = {
     this.player = platform.game.add.sprite(33.6, 50, 'hero');
 
     var walk = this.player.animations.add('walk');
-    this.player.animations.play('walk', 15, true);
+    this.player.animations.play('walk', this.fps, true);
 
     this.score = 0;
     this.labelScore = platform.game.add.text(20, 20, '0', {font: "30px Arial", fill: 'white'});
@@ -129,8 +130,9 @@ platform.Game.prototype = {
   incrementer: 0,
   increaseVelocity: function() {
     this.velocity -= 100;
-    this.gravity += 200;
+    this.gravity += 400;
     this.jumpHeight += 50;
+    this.fps += 2;
   },
   heights: [480, 325, 425, 260],
   addBoxes: function() {
