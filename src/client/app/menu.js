@@ -9,8 +9,6 @@ platform.Menu.prototype = {
 
         this.game.add.button(200,256, 'box', this.startGame, this, 2, 1, 0);
         this.game.add.button(384,256, 'box', this.startGame, this, 2, 1, 0);
-        this.game.debug.pointer(this.game.input.pointer1);
-        this.game.debug.pointer(this.game.input.pointer2);
 
     },
     update: function() {
