@@ -10,6 +10,7 @@ platform.Preload.prototype = {
         this.load.tilemap('jsonFile', 'app/assets/buildings_basic.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('buildings', 'app/assets/sheet.png');
         this.load.image('coin', 'app/assets/coin_01.png');
+        this.load.image('menu', 'app/assets/lazy_menu.png')
       },
     create: function() {
         this.state.start('Menu');
