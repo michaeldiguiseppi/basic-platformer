@@ -8,8 +8,8 @@ platform.Menu.prototype = {
         this.game.add.text(220,50, 'Welcome to ze Game!!!', {font:'20px Arial', fill: '#fff'});
 
         button = this.game.add.button(200,256, 'box', this.startGame, this, 2, 1, 0);
-        var frame3 = this.game.add.sprite(384, 256, 'box');
-        frame3.scale.setTo(1.25, 1.25);
+        button2 = this.game.add.button(384,256, 'box', this.startGame, this, 2, 1, 0);
+
     },
     update: function() {
 
