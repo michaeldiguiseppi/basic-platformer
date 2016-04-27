@@ -8,7 +8,8 @@ platform.Game = function(){};
 platform.Game.prototype = {
   velocity: -300,
   gravity: 1000,
-  jumpHeight: 400,
+  jumpHeight: 500,
+  fps: 15,
   create: function() {
 
     if (platform.game.device.desktop === false) {
@@ -22,30 +23,28 @@ platform.Game.prototype = {
 
     }
 
+    backgound = platform.game.add.tileSprite(0, 0, platform.game.width, platform.game.height, 'background');
+
     // center the platform.game horizontally and vertically
     platform.game.scale.pageAlignHorizontally = true;
     platform.game.scale.pageAlignVertically = true;
 
 
 
-    platform.game.stage.backgroundColor = '#27d9d3';
+    // platform.game.stage.backgroundColor = '#27d9d3';
     platform.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    // mymap = platform.game.add.tilemap('jsonFile');
-    // mymap.addTilesetImage('buildings');
-    // layermain = mymap.createLayer('Tile Layer 1');
-    // mymap.setCollisionByExclusion([0], true, 'Tile Layer 1');
+    this.player = platform.game.add.sprite(33.6, 50, 'hero');
 
-    this.player = platform.game.add.sprite(50, 100, 'player');
-    this.player.width = 50;
-    this.player.height = 50;
+    var walk = this.player.animations.add('walk');
+    this.player.animations.play('walk', this.fps, true);
 
     this.score = 0;
     this.labelScore = platform.game.add.text(20, 20, '0', {font: "30px Arial", fill: 'white'});
 
     //Iphone Flip buttons
-    buttonJump = this.game.add.button(50,600, 'box', this.jump, this, 2, 1, 0);
-    buttonFlip = this.game.add.button(1234,600, 'box', this.flip, this, 2, 1, 0);
+    buttonJump = this.game.add.button(50,600, 'jump-button', this.jump, this, 2, 1, 0);
+    buttonFlip = this.game.add.button(1150,600, 'flip-button', this.flip, this, 2, 1, 0);
 
     platform.game.physics.arcade.enable(this.player);
 
@@ -69,7 +68,6 @@ platform.Game.prototype = {
     this.ground.body.allowGravity = false;
 
     this.timer = platform.game.time.events.loop(100, this.addBoxes, this);
-    // this.bottomTimer = platform.game.time.events.loop(100, this.addBottomBoxes, this);
 
     this.boxes = platform.game.add.group();
     this.coins = platform.game.add.group();
@@ -129,7 +127,7 @@ platform.Game.prototype = {
   jump: function() {
     var animation = platform.game.add.tween(this.player);
 
-    animation.to({angle: this.player.angle + 180}, 300);
+    animation.to({angle: this.player.angle + 360}, 300);
 
     if (this.player.body.touching.down) {
       this.player.body.velocity.y = -(this.jumpHeight);
@@ -140,13 +138,16 @@ platform.Game.prototype = {
     }
   },
   flip: function() {
+    var animation;
     if ( this.player.body.touching.down ){
       this.player.x = 50;
       this.player.y = 450;
+      this.player.scale.y = -1;
       this.player.body.gravity.y = -(this.gravity);
     } else if ( this.player.body.touching.up ){
       this.player.x = 50;
       this.player.y = 350;
+      this.player.scale.y = 1;
       this.player.body.gravity.y = this.gravity;
     }
   },
@@ -165,11 +166,9 @@ platform.Game.prototype = {
   incrementer: 0,
   increaseVelocity: function() {
     this.velocity -= 100;
-    console.log('Velocity', this.velocity);
-    this.gravity += 200;
-    console.log('Gravity', this.gravity);
+    this.gravity += 400;
     this.jumpHeight += 50;
-    console.log('jumpHeight', this.jumpHeight);
+    this.fps += 2;
   },
   heights: [480, 325, 425, 260],
   addBoxes: function() {
@@ -213,7 +212,6 @@ platform.Game.prototype = {
      this.coins.getFirstAlive().destroy();
      this.score += 1;
      this.labelScore.text = this.score;
-     console.log("Get Money!");
    },
 
 };
