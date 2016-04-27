@@ -11,9 +11,13 @@ var lawnchair = new Lawnchair({table:'localScores', adaptor:'webkit'}, function(
 platform.Menu.prototype = {
     create: function() {
         lawnchair.keys(function(keys) {
+            var high = 70;
             keys.forEach(function(key){
+
                  lawnchair.get(key, function(data) {
                     console.log(data.dataList);
+                    platform.game.add.text(200, high, data.dataList.score);
+                    high += 20;
                 });
             });
         });
