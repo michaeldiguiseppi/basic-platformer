@@ -1,6 +1,6 @@
 var platform = platform || {};
 
-platform.game = new Phaser.Game(640, 480, Phaser.AUTO, 'gameArea');
+platform.game = new Phaser.Game(1334, 750, Phaser.AUTO, 'gameArea');
 
 // var game = new Phaser.Game(640, 480, 'gameArea');
 

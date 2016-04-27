@@ -44,12 +44,16 @@ platform.Game.prototype = {
     this.score = 0;
     this.labelScore = platform.game.add.text(20, 20, '0', {font: "30px Arial", fill: 'white'});
 
+    //Iphone Flip buttons
+    buttonJump = this.game.add.button(50,600, 'box', this.jump, this, 2, 1, 0);
+    buttonFlip = this.game.add.button(1234,600, 'box', this.flip, this, 2, 1, 0);
 
     platform.game.physics.arcade.enable(this.player);
 
     this.player.body.gravity.y = this.gravity;
     this.player.anchor.setTo(0.5, 0.5);
 
+    //Desktop Flip Control
     var spaceKey = platform.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     var downKey = platform.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     spaceKey.onDown.add(this.jump, this);
@@ -57,7 +61,7 @@ platform.Game.prototype = {
 
     this.game.world.width = 50000;
 
-    this.ground = this.add.tileSprite(0, this.game.height- 240, this.game.world.width, 50, 'ground');
+    this.ground = this.add.tileSprite(0, this.game.height- 375, this.game.world.width, 50, 'ground');
     this.game.world.bringToTop(this.ground);
 
     this.game.physics.arcade.enable(this.ground);
@@ -102,11 +106,11 @@ platform.Game.prototype = {
   flip: function() {
     if ( this.player.body.touching.down ){
       this.player.x = 50;
-      this.player.y = 315;
+      this.player.y = 450;
       this.player.body.gravity.y = -(this.gravity);
     } else if ( this.player.body.touching.up ){
       this.player.x = 50;
-      this.player.y = 215;
+      this.player.y = 350;
       this.player.body.gravity.y = this.gravity;
     }
   },
@@ -131,26 +135,27 @@ platform.Game.prototype = {
     this.jumpHeight += 50;
     console.log('jumpHeight', this.jumpHeight);
   },
+  heights: [480, 325, 425, 260],
   addBoxes: function() {
     this.incrementer++;
     var rand = Math.floor(Math.random() * 10);
     if ( rand > 7 && this.incrementer > 5){
       this.incrementer = 0;
-      var randHeight = Math.floor(Math.random() * 3);
-      this.addBox(650, this.game.height-this.heights[randHeight], this.velocity);
+      var randHeight = Math.floor(Math.random() * 4);
+      this.addBox(1334, this.game.height-this.heights[randHeight], this.velocity);
       if (rand > 8 ){
          switch (this.heights[randHeight]){
-           case 130:
-             this.addCoin(650, this.game.height-this.heights[randHeight] - 55, this.velocity);
+           case 260:
+             this.addCoin(1334, this.game.height-this.heights[randHeight] - 55, this.velocity);
            break;
-           case 190:
-             this.addCoin(650, this.game.height-this.heights[randHeight] + 75, this.velocity);
+           case 325:
+             this.addCoin(1334, this.game.height-this.heights[randHeight] + 75, this.velocity);
            break;
-           case 290:
-             this.addCoin(650, this.game.height-this.heights[randHeight] - 75, this.velocity);
+           case 425:
+             this.addCoin(1334, this.game.height-this.heights[randHeight] - 75, this.velocity);
            break;
-           case 350:
-             this.addCoin(650, this.game.height-this.heights[randHeight] + 55, this.velocity);
+           case 480:
+             this.addCoin(1334, this.game.height-this.heights[randHeight] + 55, this.velocity);
            break;
          }
        }
@@ -174,7 +179,6 @@ platform.Game.prototype = {
      this.labelScore.text = this.score;
      console.log("Get Money!");
    },
-  heights: [290, 190, 350, 130],
   restartGame: function() {
     platform.game.state.start('main');
   },

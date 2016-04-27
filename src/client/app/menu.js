@@ -7,8 +7,8 @@ platform.Menu.prototype = {
         this.game.stage.backgroundColor = '#707070';
         this.game.add.text(220,50, 'Welcome to ze Game!!!', {font:'20px Arial', fill: '#fff'});
 
-        button = this.game.add.button(200,256, 'box', this.startGame, this, 2, 1, 0);
-        button2 = this.game.add.button(384,256, 'box', this.startGame, this, 2, 1, 0);
+        this.game.add.button(200,256, 'box', this.startGame, this, 2, 1, 0);
+        this.game.add.button(384,256, 'box', this.startGame, this, 2, 1, 0);
 
     },
     update: function() {
