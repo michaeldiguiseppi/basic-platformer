@@ -78,11 +78,11 @@ platform.Game.prototype = {
   },
   gameOver: function(){
         // When the paus button is pressed, we pause the game
-        var lastSync = new Date();
+        var key = Math.random(10000);
         var data = {
                 score: this.score
               };
-        lawnchair.save({key:'player_1', lastSync: lastSync, dataList: data});
+        lawnchair.save({key: key, dataList: data});
         platform.game.paused = true;
         console.log(this.score);
         // Then add the menu
