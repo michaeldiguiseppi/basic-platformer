@@ -10,12 +10,16 @@ var lawnchair = new Lawnchair({table:'localScores', adaptor:'webkit'}, function(
 
 platform.Menu.prototype = {
     create: function() {
-        lawnchair.get('player_1', function(obj) {
-            if (obj) {
-                lastSync = obj.lastSync;
-                dataList = obj.dataList;
-                console.log(dataList);
-            }
+        lawnchair.keys(function(keys) {
+            var high = 70;
+            keys.forEach(function(key){
+
+                 lawnchair.get(key, function(data) {
+                    console.log(data.dataList);
+                    platform.game.add.text(200, high, data.dataList.score);
+                    high += 20;
+                });
+            });
         });
         this.game.stage.backgroundColor = '#707070';
         this.game.add.text(220,50, 'Welcome to ze Game!!!', {font:'20px Arial', fill: '#fff'});
