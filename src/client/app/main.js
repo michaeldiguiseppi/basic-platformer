@@ -23,13 +23,15 @@ platform.Game.prototype = {
 
     }
 
+    backgound = platform.game.add.tileSprite(0, 0, platform.game.width, platform.game.height, 'background');
+
     // center the platform.game horizontally and vertically
     platform.game.scale.pageAlignHorizontally = true;
     platform.game.scale.pageAlignVertically = true;
 
 
 
-    platform.game.stage.backgroundColor = '#27d9d3';
+    // platform.game.stage.backgroundColor = '#27d9d3';
     platform.game.physics.startSystem(Phaser.Physics.ARCADE);
 
     this.player = platform.game.add.sprite(33.6, 50, 'hero');
