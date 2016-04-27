@@ -44,12 +44,16 @@ platform.Game.prototype = {
     this.score = 0;
     this.labelScore = platform.game.add.text(20, 20, '0', {font: "30px Arial", fill: 'white'});
 
+    //Iphone Flip buttons
+    buttonJump = this.game.add.button(50,400, 'box', this.jump, this, 2, 1, 0);
+    buttonFlip = this.game.add.button(550,400, 'box', this.flip, this, 2, 1, 0);
 
     platform.game.physics.arcade.enable(this.player);
 
     this.player.body.gravity.y = this.gravity;
     this.player.anchor.setTo(0.5, 0.5);
 
+    //Desktop Flip Control
     var spaceKey = platform.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     var downKey = platform.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     spaceKey.onDown.add(this.jump, this);
