@@ -5,7 +5,6 @@ var platform = platform || {};
 
 platform.Game = function(){};
 
-
 platform.Game.prototype = {
   velocity: -300,
   gravity: 1000,
@@ -74,11 +73,48 @@ platform.Game.prototype = {
     this.coins = platform.game.add.group();
     this.increaseTimer = platform.game.time.events.loop(15000, this.increaseVelocity, this);
 
+
+
+  },
+  gameOver: function(){
+        // When the paus button is pressed, we pause the game
+        var lastSync = new Date();
+        var data = {
+                score: this.score
+              };
+        lawnchair.save({key:'player_1', lastSync: lastSync, dataList: data});
+        platform.game.paused = true;
+        console.log(this.score);
+        // Then add the menu
+        menu = platform.game.add.sprite(platform.game.width/2, platform.game.height/2, 'menu');
+        menu.anchor.setTo(0.5, 0.5);
+
+        platform.game.input.onDown.add(this.unpause, self);
+
+
+  },
+  unpause: function(event){
+      // Only act if paused
+      if(platform.game.paused){
+          // Calculate the corners of the menu
+          var x1 = platform.game.width/2 - 270/2, x2 = platform.game.width/2 + 270/2,
+              y1 = platform.game.height/2 - 180/2, y2 = platform.game.height/2 + 180/2;
+          // Check if the click was inside the menu
+          if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+              platform.game.paused = false;
+              platform.game.state.start('Menu');
+          } else {
+              var lastSync = new Date();
+              lawnchair.save({key:'player_1', lastSync: lastSync, dataList: {score: this.score}});
+              platform.game.paused = false;
+              platform.game.state.start('Game');
+          }
+      }
   },
   update: function() {
     this.game.physics.arcade.collide(this.player, this.ground, null, null, this);
-     this.game.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, this);
-    // platform.game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
+    this.game.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, this);
+    this.game.physics.arcade.overlap(this.player, this.boxes, this.playerHit, null, this);
 
   },
   playerHit: function() {
@@ -86,7 +122,7 @@ platform.Game.prototype = {
    this.boxes.forEach(function(box) {
      box.body.velocity.x = 0;
    }, this);
-   this.restartGame();
+   this.gameOver();
   },
   jump: function() {
     var animation = platform.game.add.tween(this.player);
@@ -177,9 +213,7 @@ platform.Game.prototype = {
      this.score += 1;
      this.labelScore.text = this.score;
    },
-  restartGame: function() {
-    platform.game.state.start('main');
-  },
+
 };
 
 //
